@@ -4,8 +4,8 @@ resolver = "2"
 
 [workspace.package]
 authors = ["Foundry Maintainers"]
-version = "0.12.9"
-rust-version = "1.83"
+version = "0.12.3"
+rust-version = "1.70"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/foundry-rs/compilers"
@@ -21,25 +21,23 @@ dbg-macro = "warn"
 manual-string-new = "warn"
 uninlined-format-args = "warn"
 use-self = "warn"
-redundant-clone = "warn"
-# until <https://github.com/rust-lang/rust-clippy/issues/13885> is fixed
-literal-string-with-formatting-args = "allow"
 
 [workspace.lints.rust]
-rust-2018-idioms = "warn"
+rust-2018-idioms = "deny"
 # unreachable-pub = "warn"
-unused-must-use = "warn"
-redundant-lifetimes = "warn"
+unused-must-use = "deny"
 
 [workspace.lints.rustdoc]
 all = "warn"
 
 [workspace.dependencies]
-foundry-compilers = { path = "crates/compilers", version = "0.12.9" }
-foundry-compilers-artifacts = { path = "crates/artifacts/artifacts", version = "0.12.9" }
-foundry-compilers-artifacts-solc = { path = "crates/artifacts/solc", version = "0.12.9" }
-foundry-compilers-artifacts-vyper = { path = "crates/artifacts/vyper", version = "0.12.9" }
-foundry-compilers-core = { path = "crates/core", version = "0.12.9" }
+foundry-compilers = { path = "crates/compilers", version = "0.12.3" }
+foundry-compilers-artifacts = { path = "crates/artifacts/artifacts", version = "0.12.3" }
+foundry-compilers-artifacts-solc = { path = "crates/artifacts/solc", version = "0.12.3" }
+foundry-compilers-artifacts-vyper = { path = "crates/artifacts/vyper", version = "0.12.3" }
+foundry-compilers-artifacts-resolc = { path = "crates/artifacts/resolc", version = "0.12.3" }
+foundry-compilers-core = { path = "crates/core", version = "0.12.3" }
+revive-solidity = { git = "https://github.com/paritytech/revive", tag = "v0.1.0-dev.8", package = "revive-solidity" }
 
 alloy-json-abi = { version = "0.8", features = ["serde_json"] }
 alloy-primitives = { version = "0.8", features = ["serde", "rand"] }
@@ -47,17 +45,19 @@ cfg-if = "1.0"
 dunce = "1.0"
 md-5 = "0.10"
 memmap2 = "0.9"
+once_cell = "1.19"
 path-slash = "0.2"
 rayon = "1.8"
 regex = "1.10"
+which= "7.0.0"
 semver = { version = "1.0", features = ["serde"] }
 serde = { version = "1", features = ["derive", "rc"] }
 serde_json = "1.0"
 similar-asserts = "1"
-solar-parse = { version = "=0.1.1", default-features = false }
+solar-parse = { version = "=0.1.0", default-features = false }
 svm = { package = "svm-rs", version = "0.5", default-features = false }
 tempfile = "3.9"
-thiserror = "2"
+thiserror = "1"
 tracing = "0.1"
 walkdir = "2.5"
 yansi = "1.0"

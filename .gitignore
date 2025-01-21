@@ -13,3 +13,5 @@ devenv.local.nix
 .direnv
 .pre-commit-config.yaml
 .lock
+./Dockerfile.dev.docker
+Dockerfile.dev.docker

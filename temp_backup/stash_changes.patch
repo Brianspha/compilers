@@ -1,0 +1,13 @@
+diff --git a/crates/compilers/src/compile/resolc/artifact_output/resolc_artifact_output.rs b/crates/compilers/src/compile/resolc/artifact_output/resolc_artifact_output.rs
+index 1e3d40c..04452f3 100644
+--- a/crates/compilers/src/compile/resolc/artifact_output/resolc_artifact_output.rs
++++ b/crates/compilers/src/compile/resolc/artifact_output/resolc_artifact_output.rs
+@@ -60,7 +60,7 @@ impl From<ContractArtifact> for CompactContractBytecode {
+             deployed_bytecode: Some(compact_deployed_bytecode),
+         }
+     }
+-}
++} 
+ 
+ impl From<ContractArtifact> for CompactContract {
+     fn from(value: ContractArtifact) -> Self {
