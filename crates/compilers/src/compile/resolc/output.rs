@@ -1,14 +1,8 @@
 use crate::{
-    artifact_output::{ArtifactId, Artifacts},
-    artifacts::error::Severity,
-    buildinfo::RawBuildInfo,
-    compile::output::{
+    artifact_output::{ArtifactId, Artifacts}, artifacts::error::Severity, buildinfo::RawBuildInfo, compile::output::{
         info::ContractInfoRef,
         sources::{VersionedSourceFile, VersionedSourceFiles},
-    },
-    output::Builds,
-    resolc::contracts::{VersionedContract, VersionedContracts},
-    ArtifactOutput,
+    }, output::Builds, resolc::contracts::{VersionedContract, VersionedContracts}, ArtifactOutput, ConfigurableArtifacts, MultiCompiler, ProjectCompileOutput
 };
 use foundry_compilers_artifacts::{
     resolc::{contract::ResolcContract, ResolcCompilerOutput},

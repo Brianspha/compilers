@@ -78,34 +78,54 @@ impl Default for ContractArtifact {
 
 impl<'a> From<&'a ContractArtifact> for CompactContractBytecodeCow<'a> {
     fn from(value: &'a ContractArtifact) -> Self {
-        let (standard_abi, compact_bytecode, compact_deployed_bytecode) = create_byte_code(value);
-
-        Self {
-            abi: Some(Cow::Owned(standard_abi)),
-            bytecode: Some(Cow::Owned(compact_bytecode)),
-            deployed_bytecode: Some(Cow::Owned(compact_deployed_bytecode)),
+        if let Some((standard_abi, compact_bytecode, compact_deployed_bytecode)) = create_byte_code(value) {
+            Self {
+                abi: Some(Cow::Owned(standard_abi)),
+                bytecode: Some(Cow::Owned(compact_bytecode)),
+                deployed_bytecode: Some(Cow::Owned(compact_deployed_bytecode)),
+            }
+        } else {
+            Self {
+                abi: value.abi.clone().map(Cow::Owned),
+                bytecode: None,
+                deployed_bytecode: None,
+            }
         }
     }
 }
 
 impl From<ContractArtifact> for CompactContractBytecode {
     fn from(value: ContractArtifact) -> Self {
-        let (standard_abi, compact_bytecode, compact_deployed_bytecode) = create_byte_code(&value);
-        Self {
-            abi: Some(standard_abi),
-            bytecode: Some(compact_bytecode),
-            deployed_bytecode: Some(compact_deployed_bytecode),
+        if let Some((standard_abi, compact_bytecode, compact_deployed_bytecode)) = create_byte_code(&value) {
+            Self {
+                abi: Some(standard_abi),
+                bytecode: Some(compact_bytecode),
+                deployed_bytecode: Some(compact_deployed_bytecode),
+            }
+        } else {
+            Self {
+                abi: value.abi,
+                bytecode: None,
+                deployed_bytecode: None,
+            }
         }
     }
 }
 
 impl From<ContractArtifact> for CompactContract {
     fn from(value: ContractArtifact) -> Self {
-        let (standard_abi, compact_bytecode, _) = create_byte_code(&value);
-        Self {
-            bin: Some(compact_bytecode.object.clone()),
-            bin_runtime: Some(compact_bytecode.object),
-            abi: Some(standard_abi),
+        if let Some((standard_abi, compact_bytecode, _)) = create_byte_code(&value) {
+            Self {
+                bin: Some(compact_bytecode.object.clone()),
+                bin_runtime: Some(compact_bytecode.object),
+                abi: Some(standard_abi),
+            }
+        } else {
+            Self {
+                bin: None,
+                bin_runtime: None,
+                abi: value.abi,
+            }
         }
     }
 }
@@ -346,32 +366,40 @@ pub fn revive_abi_to_json_abi(
 }
 fn create_byte_code(
     parent_contract: &ContractArtifact,
-) -> (JsonAbi, CompactBytecode, CompactDeployedBytecode) {
+) -> Option<(JsonAbi, CompactBytecode, CompactDeployedBytecode)> {
     let standard_abi = parent_contract.abi.clone().unwrap_or_default();
 
-    let binding = parent_contract.evm.clone().unwrap().bytecode.unwrap();
-    let raw_bytecode = binding.object.as_str();
-    let binding = parent_contract.evm.clone().unwrap().deployed_bytecode.unwrap();
-    let raw_deployed_bytecode = binding.object.as_str();
+    let evm = parent_contract.evm.as_ref()?;
+    
+    let raw_bytecode = evm.bytecode.as_ref()?.object.as_str();
+    let raw_deployed_bytecode = evm.deployed_bytecode.as_ref()?.object.as_str();
 
-    let bytecode = BytecodeObject::Bytecode(Bytes::from(hex::decode(raw_bytecode).unwrap()));
-    let deployed_bytecode =
-        BytecodeObject::Bytecode(Bytes::from(hex::decode(raw_deployed_bytecode).unwrap()));
+    let bytecode = match hex::decode(raw_bytecode) {
+        Ok(bytes) => BytecodeObject::Bytecode(Bytes::from(bytes)),
+        Err(_) => return None,
+    };
+
+    let deployed_bytecode = match hex::decode(raw_deployed_bytecode) {
+        Ok(bytes) => BytecodeObject::Bytecode(Bytes::from(bytes)),
+        Err(_) => return None,
+    };
 
     let compact_bytecode = CompactBytecode {
         object: bytecode,
         source_map: None,
         link_references: BTreeMap::default(),
     };
+    
     let compact_bytecode_deployed = CompactBytecode {
         object: deployed_bytecode,
         source_map: None,
         link_references: BTreeMap::default(),
     };
+    
     let compact_deployed_bytecode = CompactDeployedBytecode {
         bytecode: Some(compact_bytecode_deployed),
         immutable_references: BTreeMap::default(),
     };
 
-    (standard_abi, compact_bytecode, compact_deployed_bytecode)
+    Some((standard_abi, compact_bytecode, compact_deployed_bytecode))
 }
