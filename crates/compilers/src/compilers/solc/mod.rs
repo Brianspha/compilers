@@ -1,8 +1,8 @@
 use super::{
-    restrictions::CompilerSettingsRestrictions, CompilationError, Compiler, CompilerInput,
-    CompilerOutput, CompilerSettings, CompilerVersion, Language, ParsedSource,
+    restrictions::CompilerSettingsRestrictions, Compiler, CompilerInput, CompilerOutput,
+    CompilerSettings, CompilerVersion, Language, ParsedSource,
 };
-use crate::resolver::parse::SolData;
+use crate::{resolver::parse::SolData, CompilationError};
 pub use foundry_compilers_artifacts::SolcLanguage;
 use foundry_compilers_artifacts::{
     error::SourceLocation,
@@ -113,7 +113,7 @@ pub struct SolcVersionedInput {
     #[serde(flatten)]
     pub input: SolcInput,
     #[serde(flatten)]
-    cli_settings: CliSettings,
+    pub cli_settings: CliSettings,
 }
 
 impl CompilerInput for SolcVersionedInput {

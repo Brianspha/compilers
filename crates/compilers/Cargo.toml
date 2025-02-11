@@ -33,6 +33,7 @@ thiserror.workspace = true
 path-slash.workspace = true
 yansi.workspace = true
 solar-parse.workspace = true
+which.workspace = true
 futures-util = { workspace = true, optional = true }
 tokio = { workspace = true, optional = true }
 
@@ -54,6 +55,7 @@ svm = { workspace = true, optional = true }
 svm-builds = { package = "svm-rs-builds", version = "0.5", default-features = false, optional = true }
 sha2 = { version = "0.10", default-features = false, optional = true }
 
+
 [dev-dependencies]
 tracing-subscriber = { version = "0.3", default-features = false, features = [
     "env-filter",
@@ -68,7 +70,7 @@ snapbox.workspace = true
 foundry-compilers-core = { workspace = true, features = ["test-utils"] }
 
 [features]
-default = ["rustls"]
+default = ["rustls", "async", "svm-solc", "project-util"]
 test-utils = []
 
 full = ["async", "svm-solc"]

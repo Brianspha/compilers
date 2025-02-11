@@ -825,7 +825,6 @@ impl EvmVersion {
     pub fn default_version_solc(version: &Version) -> Option<Self> {
         // In most cases, Solc compilers use the highest EVM version available at the time.
         let default = Self::default().normalize_version_solc(version)?;
-
         // However, there are some exceptions where the default is lower than the highest available.
         match default {
             Self::Constantinople => {
